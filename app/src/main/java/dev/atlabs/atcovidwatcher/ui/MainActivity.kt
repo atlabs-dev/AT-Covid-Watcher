@@ -60,13 +60,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
                 "\nRecovered: ${latestStats.recovered.value} " +
                 "\nDead: ${latestStats.deaths.value} " +
                 "\nGlobal Mortality Rate: ${(latestStats.deaths.value.toFloat() / latestStats.confirmed.value.toFloat()) * 100} %")
+                "\nRecovery Rate: ${(latestStats.recovered.value.toFloat() / latestStats.confirmed.value.toFloat()) * 100} %\")"
     }
 
     private fun bindItems(latestStats: CovidStatistic) {
         val rvItems = listOf(
             DashboardItem("Confirmed", latestStats.confirmed.value.toString()),
             DashboardItem("Recovered", latestStats.recovered.value.toString()),
-            DashboardItem("Deaths", latestStats.deaths.value.toString()))
+            DashboardItem("Deaths", latestStats.deaths.value.toString()),
+            DashboardItem("Fatality Rate", "${((latestStats.deaths.value.toFloat() / latestStats.confirmed.value.toFloat()) * 100)} %"),
+            DashboardItem("Recovery Rate", "${((latestStats.recovered.value.toFloat() / latestStats.confirmed.value.toFloat()) * 100)} %")
+        )
 
         tvTime.text = latestStats.lastUpdate
 

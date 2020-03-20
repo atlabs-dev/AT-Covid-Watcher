@@ -52,6 +52,7 @@
                 tools:text="128000" />
 
             <TextView
+                android:id="@+id/tv_cases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

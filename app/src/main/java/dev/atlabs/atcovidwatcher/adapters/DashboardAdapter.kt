@@ -39,10 +39,13 @@ class DashboardAdapter(private val context: Context) : RecyclerView.Adapter<Dash
 
         private val tvTitle: TextView = view.tv_title
         private val tvValue: TextView = view.tv_unit
+        private val tvCases: TextView = view.tv_cases
 
         fun bind(item: DashboardItem) {
+            if(item.name.equals("Fatality Rate", true) || item.name.equals("Recovery Rate", true))
             tvTitle.text = item.name
             tvValue.text = item.value
+            tvCases.visibility = View.INVISIBLE
         }
     }
 }
