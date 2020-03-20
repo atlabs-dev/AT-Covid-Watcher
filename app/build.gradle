@@ -1,0 +1,153 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply from: "../app/dependencies.gradle"
+
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'androidx.navigation.safeargs'
+
+android {
+
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "dev.atlabs.atcovidwatcher"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    configurations {
+        ktlint
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+
+        unitTests.all {
+            systemProperty 'robolectric.dependency.repo.url', 'https://local-mirror/repo'
+            systemProperty 'robolectric.dependency.repo.id', 'local'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // For Kotlin projects
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+    // to generate report in checkstyle format prepend following args:
+    // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
+    // see https://github.com/pinterest/ktlint#usage for more
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
+
+def libs = ext.library
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation "androidx.appcompat:appcompat:1.1.0"
+
+    implementation libs.support_design
+    implementation libs.support_compat
+    implementation libs.support_cardview
+    implementation libs.support_emoji
+    implementation libs.support_constraint
+    implementation libs.core
+    implementation libs.support_legacy
+
+    //navigation dependencies
+    implementation libs.nav_fragment
+    implementation libs.nav_ui
+
+    //retrofit
+    implementation libs.retrofit
+    implementation libs.retrofit_gson
+    implementation libs.retrofit_coroutines
+    implementation libs.api_logging
+
+    //image processing
+    implementation libs.coil
+
+    //lottie
+    implementation libs.lottie
+
+    //coroutines
+    implementation libs.ktx_coroutines
+
+    //architecture dependencies
+    implementation libs.arch_lifecycle
+    implementation libs.arch_lifecycle_live_data
+    implementation libs.arch_common_java_eight
+
+    //room dependencies
+    implementation libs.room_ktx
+    implementation libs.room_runtime
+
+    //logging
+    implementation libs.timber
+
+    //linting
+    ktlint libs.ktlint
+
+    //kodein di
+    implementation libs.kodein_generic
+    implementation libs.kodein_androidx
+
+    //annotation processors
+    kapt libs.room_compiler
+
+    //test depencies
+    testImplementation libs.junit
+    testImplementation libs.mockito
+    testImplementation libs.arch_test
+    testImplementation libs.robolectric
+
+    //android test dependencies
+    androidTestImplementation "org.mockito:mockito-android:2.8.47"
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.3'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation "com.android.support:support-annotations:28.0.0"
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+}

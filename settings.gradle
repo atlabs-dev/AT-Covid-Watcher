@@ -1,0 +1,2 @@
+rootProject.name='AT Covid Watcher'
+include ':app'
